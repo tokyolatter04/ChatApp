@@ -8,10 +8,18 @@
 * TcpClient
  ***************************************/
 
-#include <iostream>
+ /*
+	 How It Works:
+
+	 - Client generates an RSA key pair
+	 - Client sends the RSA public key to the server
+	 - Server generates an AES key
+	 - Server encrypts the AES key with the RSA public key and sends it to the client
+	 - The client decrypts the AES key with their RSA private key
+	 - AES key is now used to encrypt all traffic
+ */
 
 bool TcpClient::InitEncrytion() {
-	std::cout << "Initialising client encryption\n";
 
 	// Receive the client's public RSA key
 
@@ -41,10 +49,13 @@ bool TcpClient::InitEncrytion() {
 		return false;
 	}
 
-	std::cout << aes_key << '\n';
-
 	return false;
 }
+
+/*
+	Disconnect the client if it is currently connected
+	Shutdown and close the client socket
+*/
 
 void TcpClient::Disconnect() {
 	// Exit if the client is already disconnected
@@ -64,6 +75,14 @@ void TcpClient::Disconnect() {
 bool TcpClient::IsConnected() const {
 	return connected;
 }
+
+/*
+	Upload raw data to the client
+	Use a thread lock for thread safe uploading that is synchronized
+	Do not attempt to send if the client is already disconnected
+	Set connected to false if the connection has disconnected while sending
+	Return false if any errors occurred while sending
+*/
 
 bool TcpClient::Send(char* data, int32 data_len) {
 	// Lock access for other threads
@@ -95,6 +114,13 @@ bool TcpClient::Send(char* data, int32 data_len) {
 
 	return true;
 }
+
+/*
+	Receive raw data from the server
+	Do not attempt to receive if the client is already disconnected
+	Set connected to false if the connection has disconnected while receiving
+	Return false if any errors occurred while receiving
+*/
 
 bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
 	// Exit if the client is not connected
@@ -131,6 +157,11 @@ bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
  * TcpServer
   ***************************************/
 
+/*
+	Setup the server socket in WinSock
+	Create a server address from the IP and port and bind that to the socket for use
+*/
+
 bool TcpServer::Open() {
 	open = true;
 
@@ -165,6 +196,11 @@ bool TcpServer::Open() {
 	return true;
 }
 
+/*
+	Shutdown and close the socket
+	Do not attempt to shutdown if the server has not been opened
+*/
+
 bool TcpServer::Shutdown() {
 	// Exit if the server has already been shutdown
 
@@ -184,6 +220,13 @@ bool TcpServer::Shutdown() {
 bool TcpServer::IsOpen() const {
 	return open;
 }
+
+/*
+	Attempt to accept a connection from a client
+	Do not attempt to accept a connection if the server is not open
+	Return false if any errors occurred while accepting the connection
+	Fill the 'out_client' variable with a TcpClient object
+*/
 
 bool TcpServer::Accept(TcpClient* out_client) {
 	// Exit if the server has been shutdown

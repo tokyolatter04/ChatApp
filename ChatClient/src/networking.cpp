@@ -4,6 +4,11 @@
 #include "../include/networking.hpp"
 #include "../include/cryptography.hpp"
 
+/*
+	Setup the client's socket in WinSock
+	Create a server address from the IP and port
+*/
+
 bool TcpClient::Open() {
 	// Create socket
 
@@ -23,12 +28,12 @@ bool TcpClient::Open() {
 
 	// Create server address
 
-	addr = { 0 };
+	server_addr = { 0 };
 
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(server_port);
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(server_port);
 
-	if (inet_pton(AF_INET, server_ip.c_str(), &addr.sin_addr) == SOCKET_ERROR) {
+	if (inet_pton(AF_INET, server_ip.c_str(), &server_addr.sin_addr) == SOCKET_ERROR) {
 		// Invalid or unsupported IP address
 
 		return false;
@@ -37,11 +42,17 @@ bool TcpClient::Open() {
 	return true;
 }
 
+/*
+	Connect to the server
+	Keep retrying until the connection works
+	Sleep for 2 seconds between connections
+*/
+
 void TcpClient::Connect() {
 	while (true) {
 		// Attempt to connect to the server
 
-		int32 result = connect(sock, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
+		int32 result = connect(sock, (SOCKADDR*)&server_addr, sizeof(SOCKADDR_IN));
 
 		if (result != SOCKET_ERROR) {
 			// Connection attempt was accepted
@@ -55,6 +66,11 @@ void TcpClient::Connect() {
 		Sleep(2000);
 	}
 }
+
+/*
+	Disconnect from the server if it is currently connected
+	Shutdown and close the sockets
+*/
 
 bool TcpClient::Disconnect() {
 	// Exit if the client is already disconnected
@@ -75,10 +91,18 @@ bool TcpClient::IsConnected() const {
 	return connected;
 }
 
-#include <iostream>
+/*
+	How It Works:
+
+	- Client generates an RSA key pair
+	- Client sends the RSA public key to the server
+	- Server generates an AES key
+	- Server encrypts the AES key with the RSA public key and sends it to the client
+	- The client decrypts the AES key with their RSA private key
+	- AES key is now used to encrypt all traffic
+*/
 
 bool TcpClient::InitEncryption() {
-	std::cout << "Initialising client encryption\n";
 
 	// Generate and sent an RSA public key
 
@@ -105,11 +129,16 @@ bool TcpClient::InitEncryption() {
 
 	std::string aes_key = rsa.Decrypt(encrypted_aes_key);
 
-
-	std::cout << aes_key << '\n';
-
 	return false;
 }
+
+/*
+	Upload raw data from the server
+	Use a thread lock for thread safe uploading that is synchronized
+	Do not attempt to send if the client is already disconnected
+	Set connected to false if the connection has disconnected while sending
+	Return false if any errors occurred while sending
+*/
 
 bool TcpClient::Send(char* data, int32 buffer_len) {
 	// Lock access for other threads
@@ -141,6 +170,13 @@ bool TcpClient::Send(char* data, int32 buffer_len) {
 
 	return true;
 }
+
+/*
+	Receive raw data from the server
+	Do not attempt to receive if the client is already disconnected
+	Set connected to false if the connection has disconnected while receiving
+	Return false if any errors occurred while receiving
+*/
 
 bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
 	// Exit if the client is not connected to the server
