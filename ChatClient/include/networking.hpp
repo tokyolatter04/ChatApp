@@ -44,6 +44,8 @@ public:
 	bool Disconnect();
 	bool IsConnected() const;
 
+	bool InitEncryption();
+
 	bool Send(char* data, int32 data_len);
 	bool Receive(char* buffer, int32 buffer_len, int32* out_len);
 };

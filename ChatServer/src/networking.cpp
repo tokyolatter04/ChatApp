@@ -2,10 +2,49 @@
 #include <WS2tcpip.h>
 
 #include "../include/networking.hpp"
+#include "../include/cryptography.hpp"
 
 /***************************************
 * TcpClient
  ***************************************/
+
+#include <iostream>
+
+bool TcpClient::InitEncrytion() {
+	std::cout << "Initialising client encryption\n";
+
+	// Receive the client's public RSA key
+
+	char buffer[4096];
+	memset(buffer, 0, 4096);
+	int32 recv_len;
+
+	if (!Receive(buffer, 4096, &recv_len)) {
+		return false;
+	}
+
+	std::string public_key = std::string(buffer, recv_len);
+
+	// Generate AES key
+
+	std::string aes_key;
+
+	if (!Cryptography::Aes::GenerateRandomKey(&aes_key)) {
+		return false;
+	}
+
+	// Encrypt AES key with public RSA key and send it to the client
+
+	std::string encrypted = Cryptography::Rsa::EncryptWithKey(aes_key, public_key);
+
+	if (!Send((char*)encrypted.c_str(), encrypted.length())) {
+		return false;
+	}
+
+	std::cout << aes_key << '\n';
+
+	return false;
+}
 
 void TcpClient::Disconnect() {
 	// Exit if the client is already disconnected

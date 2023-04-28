@@ -32,6 +32,8 @@ public:
 		return *this;
 	}
 
+	bool InitEncrytion();
+
 	void Disconnect();
 	bool IsConnected() const;
 

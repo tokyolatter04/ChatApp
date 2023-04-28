@@ -2,6 +2,7 @@
 #include <WS2tcpip.h>
 
 #include "../include/networking.hpp"
+#include "../include/cryptography.hpp"
 
 bool TcpClient::Open() {
 	// Create socket
@@ -72,6 +73,42 @@ bool TcpClient::Disconnect() {
 
 bool TcpClient::IsConnected() const {
 	return connected;
+}
+
+#include <iostream>
+
+bool TcpClient::InitEncryption() {
+	std::cout << "Initialising client encryption\n";
+
+	// Generate and sent an RSA public key
+
+	Cryptography::Rsa rsa;
+	std::string public_key = rsa.GetPublicKey();
+
+	if (!Send((char*)public_key.c_str(), public_key.length())) {
+		return false;
+	}
+
+	// Receive the encrypted AES key
+
+	char buffer[4096];
+	memset(buffer, 0, 4096);
+	int32 recv_len;
+
+	if (!Receive(buffer, 4096, &recv_len)) {
+		return false;
+	}
+
+	std::string encrypted_aes_key = std::string(buffer, recv_len);
+
+	// Decrypt the AES key with the RSA private key
+
+	std::string aes_key = rsa.Decrypt(encrypted_aes_key);
+
+
+	std::cout << aes_key << '\n';
+
+	return false;
 }
 
 bool TcpClient::Send(char* data, int32 buffer_len) {

@@ -63,6 +63,7 @@ int main(void) {
 
 	client.Open();
 	client.Connect();
+	client.InitEncryption();
 
 	// Window loop
 
