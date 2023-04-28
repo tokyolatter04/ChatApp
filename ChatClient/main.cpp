@@ -10,6 +10,8 @@
 #include <DearImGUI/imgui_impl_glfw.h>
 #include <DearImGUI/imgui_impl_opengl3.h>
 
+#include "../include/networking.hpp"
+
 int main(void) {
 
 	// Initialise GLFW
@@ -50,6 +52,17 @@ int main(void) {
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
+
+	// Intialise WinSock
+
+	WinSockInit();
+
+	// Setup Chat Room
+
+	TcpClient client = TcpClient("127.0.0.1", 5000);
+
+	client.Open();
+	client.Connect();
 
 	// Window loop
 
