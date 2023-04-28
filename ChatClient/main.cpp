@@ -9,7 +9,10 @@ int main(void) {
 
 	// Initialise GLFW
 
-	glfwInit();
+	if (!glfwInit()) {
+		std::cout << "Fatal Error: " << "Failed to initialise GLFW" << '\n';
+		exit(EXIT_FAILURE);
+	}
 
 	// Create the window
 
@@ -21,12 +24,14 @@ int main(void) {
 
 	GLFWwindow* window = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
 
+	glfwMakeContextCurrent(window);
 	glfwSwapInterval(2);
 
 	// Initialise GLEW
 
-	if (!glewInit()) {
-
+	if (glewInit() != GLEW_OK) {
+		std::cout << "Fatal Error: " << "Failed to initialise GLEW" << '\n';
+		exit(EXIT_FAILURE);
 	}
 
 	// Window loop
