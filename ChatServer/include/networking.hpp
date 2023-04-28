@@ -5,13 +5,14 @@
 #include <mutex>
 #include <Windows.h>
 
-#include "types.hpp"
+#include "protocol.hpp"
 
 class TcpClient {
 private:
 	bool connected;
 	SOCKET sock;
 
+	Protocol protocol;
 	std::mutex send_lock;
 public:
 	TcpClient(SOCKET _sock)
@@ -21,11 +22,13 @@ public:
 		: connected(false), sock(INVALID_SOCKET) {}
 
 	TcpClient(const TcpClient& other)
-		: connected(other.connected), sock(other.sock), send_lock() {}
+		: connected(other.connected), sock(other.sock), protocol(other.protocol),
+		  send_lock() {}
 
 	TcpClient& operator=(const TcpClient& other) {
 		if (this != &other) {
 			connected = other.connected;
+			protocol = other.protocol;
 			sock = other.sock;
 		}
 
@@ -41,11 +44,20 @@ public:
 	// Check if the client is or is not connected
 	bool IsConnected() const;
 
+	// Send a protocol packet
+	bool SendPacket(std::string channel, std::string data, std::vector<std::string> flags = std::vector<std::string>());
+
 	// Send raw data to the client
 	bool Send(char* data, int32 data_len);
 
 	// Receive raw data from the client
 	bool Receive(char* buffer, int32 buffer_len, int32* out_len);
+
+	// Start listening for data
+	void StartListening();
+
+	// Get a packet from the packet queue
+	bool GetPacket(RawPacket* out_packet);
 };
 
 class TcpServer {
@@ -74,6 +86,9 @@ public:
 
 	// Attempt to accept a new connection
 	bool Accept(TcpClient* out_client);
+
+	// Listen for and process packets sent by a client
+	void PacketListener(TcpClient* client);
 };
 
 // Initialise WinSock

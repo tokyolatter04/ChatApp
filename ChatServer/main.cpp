@@ -1,5 +1,7 @@
 
 #include <iostream>
+#include <thread>
+#include <vector>
 
 #include "include/networking.hpp"
 
@@ -15,6 +17,9 @@ int main(void) {
 
 	server.Open();
 
+	std::vector<TcpClient> clients;
+
+
 	while (true) {
 		TcpClient client;
 
@@ -25,6 +30,15 @@ int main(void) {
 
 			if (client.InitEncrytion()) {
 				std::cout << "Init Encryption worked\n";
+
+				std::thread t1(&TcpClient::StartListening, &client);
+				std::thread t2(&TcpServer::PacketListener, &server, &client);
+
+
+
+				while (true) {
+					Sleep(100);
+				}
 			}
 			else {
 				std::cout << "Init Encryption failed\n";

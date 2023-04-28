@@ -65,6 +65,9 @@ int main(void) {
 	client.Connect();
 	client.InitEncryption();
 
+	client.SendPacket("test", "Hello!");
+	std::cout << "Sent\n";
+
 	// Window loop
 
 	while (!glfwWindowShouldClose(window)) {

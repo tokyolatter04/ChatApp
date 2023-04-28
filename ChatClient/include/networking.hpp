@@ -5,7 +5,7 @@
 #include <mutex>
 #include <Windows.h>
 
-#include "types.hpp"
+#include "protocol.hpp"
 
 class TcpClient {
 private:
@@ -16,6 +16,7 @@ private:
 	SOCKET sock;
 	SOCKADDR_IN server_addr;
 
+	Protocol protocol;
 	std::mutex send_lock;
 public:
 	TcpClient(std::string _server_ip, int32 _server_port)
@@ -27,12 +28,13 @@ public:
 	TcpClient(const TcpClient& other)
 		: server_ip(other.server_ip), server_port(other.server_port),
 		  connected(other.connected), sock(other.sock), server_addr(other.server_addr),
-		  send_lock() {}
+		  protocol(other.protocol), send_lock() {}
 
 	TcpClient& operator=(const TcpClient& other) {
 		if (this != &other) {
 			connected = other.connected;
 			server_addr = other.server_addr;
+			protocol = other.protocol;
 			sock = other.sock;
 		}
 
@@ -54,11 +56,20 @@ public:
 	// Initialise the AES encryption to encrypt communication to the client
 	bool InitEncryption();
 
+	// Send a protocol packet
+	bool SendPacket(std::string channel, std::string data, std::vector<std::string> flags = std::vector<std::string>());
+
 	// Send raw data to the server
 	bool Send(char* data, int32 data_len);
 
 	// Receive raw data from the server
 	bool Receive(char* buffer, int32 buffer_len, int32* out_len);
+
+	// Start listening for data
+	void StartListening();
+
+	// Get a packet from the packet queue
+	bool GetPacket(RawPacket* out_packet);
 };
 
 // Initialise WinSock

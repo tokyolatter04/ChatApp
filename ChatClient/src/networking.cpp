@@ -129,7 +129,30 @@ bool TcpClient::InitEncryption() {
 
 	std::string aes_key = rsa.Decrypt(encrypted_aes_key);
 
-	return false;
+	// Create protocol instance with AES key
+
+	protocol = Protocol(aes_key);
+
+	return true;
+}
+
+/*
+	Upload a packet using the custom Protocol
+	Return false if any errors occurred while sending
+*/
+
+bool TcpClient::SendPacket(std::string channel, std::string data, std::vector<std::string> flags) {
+	// Build packet
+
+	std::string packet = protocol.BuildPacket(channel, data, flags);
+
+	// Send packet
+
+	if (!Send((char*)packet.c_str(), packet.length())) {
+		return false;
+	}
+
+	return true;
 }
 
 /*
@@ -202,6 +225,48 @@ bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
 	}
 
 	return true;
+}
+
+/*
+	Begin reading data from the client
+	Push this data into the packet decoder
+	Stop reading when the client has disconnected
+*/
+
+void TcpClient::StartListening() {
+
+	const std::string PACKET_DELIMITER = "\t\t\t\t\t";
+	const char PACKET_DELIMITER_CHAR = '\t';
+	const std::string PACKET_SPLITTER = "|||||";
+
+	std::string packet_buffer;
+
+	while (IsConnected()) {
+		// Receive data from client
+
+		static char data[4096];
+		memset(data, 0, 4096);
+		int32 len_recv = 0;
+
+		if (!Receive(data, 4096, &len_recv)) {
+			// Error receiving data
+
+			continue;
+		}
+
+		// Push packet into protocol
+
+		protocol.PushBytes(std::string(data, len_recv));
+	}
+}
+
+/*
+	Dequeue a packet from the packet queue
+	Return false if there is nothing to dequeue
+*/
+
+bool TcpClient::GetPacket(RawPacket* out_packet) {
+	return protocol.GetPacket(out_packet);
 }
 
 void WinSockInit() {
