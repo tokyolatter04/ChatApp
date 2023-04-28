@@ -16,9 +16,9 @@ bool TcpClient::Open() {
 
 	// Setup connect timeout of 5 seconds
 
-	int connect_timeout = 5000;
+	int32 connect_timeout = 5000;
 
-	setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (char*)&connect_timeout, sizeof(int));
+	setsockopt(sock, SOL_SOCKET, SO_SNDTIMEO, (char*)&connect_timeout, sizeof(int32));
 
 	// Create server address
 
@@ -40,7 +40,7 @@ void TcpClient::Connect() {
 	while (true) {
 		// Attempt to connect to the server
 
-		int result = connect(sock, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
+		int32 result = connect(sock, (SOCKADDR*)&addr, sizeof(SOCKADDR_IN));
 
 		if (result != SOCKET_ERROR) {
 			// Connection attempt was accepted
@@ -74,7 +74,7 @@ bool TcpClient::IsConnected() const {
 	return connected;
 }
 
-bool TcpClient::Send(char* data, int buffer_len) {
+bool TcpClient::Send(char* data, int32 buffer_len) {
 	// Lock access for other threads
 	// Lock is automatically unlocked when it goes out of scope
 
@@ -88,12 +88,12 @@ bool TcpClient::Send(char* data, int buffer_len) {
 
 	// Send data to the server
 
-	int result = send(sock, data, buffer_len, 0);
+	int32 result = send(sock, data, buffer_len, 0);
 
 	// Detect if the client has been disconnected from the server
 
 	if (result == SOCKET_ERROR) {
-		int error = WSAGetLastError();
+		int32 error = WSAGetLastError();
 
 		if (error == WSAECONNRESET || error == WSAECONNABORTED || error == WSAENETRESET) {
 			connected = false;
@@ -105,7 +105,7 @@ bool TcpClient::Send(char* data, int buffer_len) {
 	return true;
 }
 
-bool TcpClient::Receive(char* buffer, int buffer_len, int* out_len) {
+bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
 	// Exit if the client is not connected to the server
 
 	if (!connected) {
@@ -119,7 +119,7 @@ bool TcpClient::Receive(char* buffer, int buffer_len, int* out_len) {
 	// Detect if the client has been disconnected from the server
 
 	if (*out_len == SOCKET_ERROR) {
-		int error = WSAGetLastError();
+		int32 error = WSAGetLastError();
 
 		if (error == WSAECONNRESET || error == WSAECONNABORTED || error == WSAENETRESET) {
 			connected = false;

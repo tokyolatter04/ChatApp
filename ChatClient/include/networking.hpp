@@ -5,10 +5,12 @@
 #include <mutex>
 #include <Windows.h>
 
+#include "types.hpp"
+
 class TcpClient {
 private:
 	std::string server_ip;
-	int server_port;
+	int32 server_port;
 
 	bool connected;
 	SOCKET sock;
@@ -16,7 +18,7 @@ private:
 
 	std::mutex send_lock;
 public:
-	TcpClient(std::string _server_ip, int _server_port)
+	TcpClient(std::string _server_ip, int32 _server_port)
 		: server_ip(_server_ip), server_port(_server_port), connected(false) {}
 
 	TcpClient()
@@ -42,8 +44,8 @@ public:
 	bool Disconnect();
 	bool IsConnected() const;
 
-	bool Send(char* data, int data_len);
-	bool Receive(char* buffer, int buffer_len, int* out_len);
+	bool Send(char* data, int32 data_len);
+	bool Receive(char* buffer, int32 buffer_len, int32* out_len);
 };
 
 void WinSockInit();

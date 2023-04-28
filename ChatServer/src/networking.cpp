@@ -26,7 +26,7 @@ bool TcpClient::IsConnected() const {
 	return connected;
 }
 
-bool TcpClient::Send(char* data, int data_len) {
+bool TcpClient::Send(char* data, int32 data_len) {
 	// Lock access for other threads
 	// Lock is automatically unlocked when it goes out of scope
 
@@ -40,12 +40,12 @@ bool TcpClient::Send(char* data, int data_len) {
 
 	// Send data to the client
 
-	int result = send(sock, data, data_len, 0);
+	int32 result = send(sock, data, data_len, 0);
 
 	// Detect if the client has disconnected
 
 	if (result == SOCKET_ERROR) {
-		int error = WSAGetLastError();
+		int32 error = WSAGetLastError();
 
 		if (error == WSAECONNRESET || error == WSAECONNABORTED || error == WSAENETRESET) {
 			connected = false;
@@ -57,7 +57,7 @@ bool TcpClient::Send(char* data, int data_len) {
 	return true;
 }
 
-bool TcpClient::Receive(char* buffer, int buffer_len, int* out_len) {
+bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
 	// Exit if the client is not connected
 
 	if (!connected) {
@@ -71,7 +71,7 @@ bool TcpClient::Receive(char* buffer, int buffer_len, int* out_len) {
 	// Detect if the client has disconnected
 
 	if (*out_len == SOCKET_ERROR) {
-		int error = WSAGetLastError();
+		int32 error = WSAGetLastError();
 
 		if (error == WSAECONNRESET || error == WSAECONNABORTED || error == WSAENETRESET) {
 			connected = false;
@@ -160,7 +160,7 @@ bool TcpServer::Accept(TcpClient* out_client) {
 	// Detect an error
 
 	if (client_sock == INVALID_SOCKET) {
-		int error = WSAGetLastError();
+		int32 error = WSAGetLastError();
 
 		if (error == WSAEINTR || error == WSAEWOULDBLOCK) {
 			return false;

@@ -5,6 +5,8 @@
 #include <mutex>
 #include <Windows.h>
 
+#include "types.hpp"
+
 class TcpClient {
 private:
 	bool connected;
@@ -33,20 +35,20 @@ public:
 	void Disconnect();
 	bool IsConnected() const;
 
-	bool Send(char* data, int data_len);
-	bool Receive(char* buffer, int buffer_len, int* out_len);
+	bool Send(char* data, int32 data_len);
+	bool Receive(char* buffer, int32 buffer_len, int32* out_len);
 };
 
 class TcpServer {
 private:
 	std::string ip;
-	int port;
+	int32 port;
 
 	bool open;
 	SOCKET sock;
 	SOCKADDR_IN addr;
 public:
-	TcpServer(std::string _ip, int _port)
+	TcpServer(std::string _ip, int32 _port)
 		: ip(_ip), port(_port), open(false) {}
 
 	TcpServer()
