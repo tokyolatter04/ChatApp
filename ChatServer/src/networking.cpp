@@ -316,47 +316,11 @@ bool TcpServer::Accept(TcpClient* out_client) {
 		}
 	}
 
-	// Create Tcp Client
+	// Create TcpClient
 
 	*out_client = TcpClient(client_sock);
 
 	return true;
-}
-
-/*
-	Listen for packets sent by a client
-	Process and decode packets
-*/
-
-#include <iostream>
-
-void TcpServer::PacketListener(TcpClient* client) {
-
-	std::cout << "OPENED FUNC\n";
-
-	while (client->IsConnected()) {
-
-		// Get a packet sent by the client
-
-		RawPacket packet;
-
-		if (!client->GetPacket(&packet)) {
-			// Poll every 50ms
-
-			Sleep(50);
-
-			continue;
-		}
-
-		// Decode the packet
-
-		std::cout << "Packet sent to: " << packet.channel << ", body: " << packet.body << '\n';
-
-		// Process the packet
-
-
-
-	}
 }
 
 void WinSockInit() {

@@ -86,9 +86,6 @@ public:
 
 	// Attempt to accept a new connection
 	bool Accept(TcpClient* out_client);
-
-	// Listen for and process packets sent by a client
-	void PacketListener(TcpClient* client);
 };
 
 // Initialise WinSock

@@ -10,7 +10,7 @@
 #include <DearImGUI/imgui_impl_glfw.h>
 #include <DearImGUI/imgui_impl_opengl3.h>
 
-#include "../include/networking.hpp"
+#include "../include/chat-app.hpp"
 
 int main(void) {
 
@@ -57,16 +57,16 @@ int main(void) {
 
 	WinSockInit();
 
-	// Setup Chat Room
+	// Setup Chat App
 
-	TcpClient client = TcpClient("127.0.0.1", 5000);
+	ChatApp chat;
 
-	client.Open();
-	client.Connect();
-	client.InitEncryption();
+	if (!chat.Start()) {
+		std::cout << "Fatal Error: " << "Failed to start Chat App" << '\n';
+		exit(EXIT_FAILURE);
+	}
 
-	client.SendPacket("test", "Hello!");
-	std::cout << "Sent\n";
+	chat.SendMessage("Hello!");
 
 	// Window loop
 

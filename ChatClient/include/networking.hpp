@@ -27,11 +27,13 @@ public:
 
 	TcpClient(const TcpClient& other)
 		: server_ip(other.server_ip), server_port(other.server_port),
-		  connected(other.connected), sock(other.sock), server_addr(other.server_addr),
-		  protocol(other.protocol), send_lock() {}
+		connected(other.connected), sock(other.sock), server_addr(other.server_addr),
+		protocol(other.protocol), send_lock() {}
 
 	TcpClient& operator=(const TcpClient& other) {
 		if (this != &other) {
+			server_ip = other.server_ip;
+			server_port = other.server_port;
 			connected = other.connected;
 			server_addr = other.server_addr;
 			protocol = other.protocol;
