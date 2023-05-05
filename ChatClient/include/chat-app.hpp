@@ -40,6 +40,10 @@ public:
 
 	ChatApp() {}
 
+	bool IsConnected() {
+		return client.IsConnected();
+	}
+
 	bool Start();
 	void Shutdown();
 

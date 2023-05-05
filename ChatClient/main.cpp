@@ -116,7 +116,16 @@ int main(void) {
 		ImGui::SetScrollY(ImGui::GetScrollMaxY());
 
 		if (ImGui::Button("Send")) {
-			chat.SendMessage(ChatMessage(chat_input));
+			if (chat.IsConnected()) {
+				chat.SendMessage(ChatMessage(chat_input));
+			}
+			else {
+				chat.messages.push_back(ChatMessage(
+					"",
+					"Application has lost connection to the server",
+					ChatUser("", "System")
+				));
+			}
 
 			memset(chat_input, 0, 256);
 		}

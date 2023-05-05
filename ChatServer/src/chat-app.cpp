@@ -68,7 +68,7 @@ void ChatApp::ConnectionListener() {
 		// Create ChatUser
 
 		std::string id = Utils::RandomUUID();
-		std::string name = "User -" + std::to_string(users.size());
+		std::string name = "User-" + std::to_string(users.size());
 
 		ChatUser user = ChatUser(id, name, client);
 
