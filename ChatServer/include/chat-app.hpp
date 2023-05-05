@@ -6,6 +6,10 @@
 
 #include "../include/networking.hpp"
 
+#undef SendMessage
+
+class ChatMessage;
+
 class ChatUser {
 public:
 	std::string id;
@@ -17,7 +21,7 @@ public:
 
 	ChatUser() {}
 
-	void SendMessage(std::string content);
+	void SendMessage(ChatMessage message);
 };
 
 class ChatMessage {
@@ -47,4 +51,6 @@ public:
 	void Shutdown();
 
 	void ConnectionListener();
+
+	void BroadcastMessage(ChatMessage message);
 };

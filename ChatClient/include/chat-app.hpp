@@ -3,6 +3,8 @@
 
 #include "../include/networking.hpp"
 
+#undef SendMessage
+
 class ChatUser {
 public:
 	std::string id;
@@ -23,16 +25,19 @@ public:
 	ChatMessage(std::string _id, std::string _content, ChatUser _sender)
 		: id(_id), content(_content), sender(_sender) {}
 
+	ChatMessage(std::string _content)
+		: content(_content) {}
+
 	ChatMessage() {}
 };
 
 class ChatApp {
 private:
 	TcpClient client;
-
+public:
 	std::vector<ChatUser> users;
 	std::vector<ChatMessage> messages;
-public:
+
 	ChatApp() {}
 
 	bool Start();
@@ -40,5 +45,5 @@ public:
 
 	void PacketProcessor();
 
-	void SendMessage(std::string content);
+	void SendMessage(ChatMessage message);
 };

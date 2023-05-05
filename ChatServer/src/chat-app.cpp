@@ -8,9 +8,9 @@
 * ChatUser
  ***************************************/
 
-void ChatUser::SendMessage(std::string content) {
+void ChatUser::SendMessage(ChatMessage message) {
 
-	client.SendPacket("message", content);
+	client.SendPacket("message", "", { message.id, message.content, message.sender.id, message.sender.name });
 
 }
 
@@ -114,5 +114,39 @@ void ChatApp::ProcessPackets(ChatUser* user) {
 
 		std::cout << "Packet: " << packet.body << '\n';
 
+		if (packet.channel == "message") {
+
+			// Extract data from the message packet
+
+			if (packet.flags.size() < 4) {
+				// Packet does not contain any message content
+
+				continue;
+			}
+
+			std::string content = packet.flags[1];
+
+			// Build and store the message
+
+			ChatMessage message = ChatMessage(
+				Utils::RandomUUID(),
+				content,
+				*user
+			);
+
+			messages.push_back(message);
+
+			// Broadcast the message
+
+			BroadcastMessage(message);
+		}
 	}
+}
+
+void ChatApp::BroadcastMessage(ChatMessage message) {
+
+	for (ChatUser& user : users) {
+		user.SendMessage(message);
+	}
+
 }

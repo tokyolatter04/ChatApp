@@ -66,8 +66,6 @@ int main(void) {
 		exit(EXIT_FAILURE);
 	}
 
-	chat.SendMessage("Hello!");
-
 	// Window loop
 
 	while (!glfwWindowShouldClose(window)) {
@@ -86,6 +84,15 @@ int main(void) {
 		ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x * 0.75f, io.DisplaySize.y * 0.9f));
 		ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 		ImGui::Begin("Chat", nullptr, ImGuiWindowFlags_NoMove);
+
+		for (ChatMessage& message : chat.messages) {
+
+			std::ostringstream line;
+			line << "[" << message.sender.name << "]: ";
+			line << message.content;
+
+			ImGui::Text(line.str().c_str());
+		}
 
 		ImGui::End();
 
@@ -109,7 +116,9 @@ int main(void) {
 		ImGui::SetScrollY(ImGui::GetScrollMaxY());
 
 		if (ImGui::Button("Send")) {
+			chat.SendMessage(ChatMessage(chat_input));
 
+			memset(chat_input, 0, 256);
 		}
 
 		ImGui::End();

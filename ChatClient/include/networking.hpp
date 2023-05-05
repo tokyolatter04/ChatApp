@@ -3,6 +3,7 @@
 
 #include <string>
 #include <mutex>
+
 #include <Windows.h>
 
 #include "protocol.hpp"

@@ -64,11 +64,36 @@ void ChatApp::PacketProcessor() {
 
 		std::cout << "Packet: " << packet.body << '\n';
 
+		if (packet.channel == "message") {
+
+			// Extract data from the message packet
+
+			if (packet.flags.size() < 4) {
+				// Packet does not contain any message data
+
+				continue;
+			}
+
+			std::string id = packet.flags[0];
+			std::string content = packet.flags[1];
+			std::string sender_id = packet.flags[2];
+			std::string sender_name = packet.flags[3];
+
+			// Build and store the message
+
+			ChatMessage message = ChatMessage(
+				id,
+				content,
+				ChatUser(sender_id, sender_name)
+			);
+
+			messages.push_back(message);
+		}
 	}
 }
 
-void ChatApp::SendMessage(std::string content) {
+void ChatApp::SendMessage(ChatMessage message) {
 
-	client.SendPacket("message", content);
+	client.SendPacket("message", "", { "", message.content, "", "" });
 
 }
