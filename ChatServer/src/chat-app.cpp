@@ -2,6 +2,7 @@
 #include <iostream>//
 
 #include "../include/chat-app.hpp"
+#include "../include/data-packet.hpp"
 #include "../include/utils.hpp"
 
 /***************************************
@@ -10,14 +11,23 @@
 
 void ChatUser::SendMessage(ChatMessage message) {
 
-	client.SendPacket("message", "", { message.id, message.content, message.sender.id, message.sender.name });
+	DataPacket packet = DataPacket::CreateMessagePacket(message);
+	std::string encoded = packet.Encode();
 
+	client.SendPacket("message", encoded);
+}
+
+void ChatUser::SendMessageList(std::vector<ChatMessage> messages) {
+
+	DataPacket packet = DataPacket::CreateMessageListPacket(messages);
+	std::string encoded = packet.Encode();
+
+	client.SendPacket("message-list", encoded);
 }
 
 /***************************************
 * ChatApp
  ***************************************/
-
 
 ChatApp::ChatApp() {
 	// Pre-allocate max user count
@@ -76,6 +86,10 @@ void ChatApp::ConnectionListener() {
 
 		users.push_back(user);
 
+		// Send the list of current messages
+
+		user.SendMessageList(messages);
+
 		// Get a pointer to this user in the user list
 
 		ChatUser* ptr = &users.back();
@@ -116,23 +130,24 @@ void ChatApp::ProcessPackets(ChatUser* user) {
 
 		if (packet.channel == "message") {
 
-			// Extract data from the message packet
+			// Decode the packet
 
-			if (packet.flags.size() < 4) {
-				// Packet does not contain any message content
+			DataPacket data_packet;
+
+			if (!DataPacket::FromJSONData(DataPacketType::Message, packet.body, &data_packet)) {
+				// Failed to decode the packet
 
 				continue;
 			}
 
-			std::string content = packet.flags[1];
+			ChatMessage message = data_packet.data.message;
 
-			// Build and store the message
+			// Assign the message ID and user object
 
-			ChatMessage message = ChatMessage(
-				Utils::RandomUUID(),
-				content,
-				*user
-			);
+			message.id = Utils::RandomUUID();
+			message.sender = *user;
+
+			// Store the message
 
 			messages.push_back(message);
 

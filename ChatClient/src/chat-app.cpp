@@ -3,6 +3,7 @@
 #include <thread>
 
 #include "../include/chat-app.hpp"
+#include "../include/data-packet.hpp"
 
 bool ChatApp::Start() {
 	// Setup and open client
@@ -66,34 +67,44 @@ void ChatApp::PacketProcessor() {
 
 		if (packet.channel == "message") {
 
-			// Extract data from the message packet
+			// Decode the packet
 
-			if (packet.flags.size() < 4) {
-				// Packet does not contain any message data
+			DataPacket data_packet;
+
+			if (!DataPacket::FromJSONData(DataPacketType::Message, packet.body, &data_packet)) {
+				// Failed to decode the packet
 
 				continue;
 			}
 
-			std::string id = packet.flags[0];
-			std::string content = packet.flags[1];
-			std::string sender_id = packet.flags[2];
-			std::string sender_name = packet.flags[3];
+			ChatMessage message = data_packet.data.message;
 
-			// Build and store the message
-
-			ChatMessage message = ChatMessage(
-				id,
-				content,
-				ChatUser(sender_id, sender_name)
-			);
+			// Store the message
 
 			messages.push_back(message);
+		}
+		else if (packet.channel == "message-list") {
+			// Decode packet
+
+			DataPacket data_packet;
+
+			if (!DataPacket::FromJSONData(DataPacketType::MessageList, packet.body, &data_packet)) {
+				// Failed to decode the packet
+
+				continue;
+			}
+
+			// Store the message list
+
+			messages = data_packet.data.message_list;
 		}
 	}
 }
 
 void ChatApp::SendMessage(ChatMessage message) {
 
-	client.SendPacket("message", "", { "", message.content, "", "" });
+	DataPacket packet = DataPacket::CreateMessagePacket(message);
+	std::string encoded = packet.Encode();
 
+	client.SendPacket("message", encoded);
 }

@@ -22,6 +22,7 @@ public:
 	ChatUser() {}
 
 	void SendMessage(ChatMessage message);
+	void SendMessageList(std::vector<ChatMessage> messages);
 };
 
 class ChatMessage {
@@ -32,6 +33,9 @@ public:
 
 	ChatMessage(std::string _id, std::string _content, ChatUser _sender)
 		: id(_id), content(_content), sender(_sender) {}
+
+	ChatMessage(std::string _content)
+		: content(_content) {}
 
 	ChatMessage() {}
 };
