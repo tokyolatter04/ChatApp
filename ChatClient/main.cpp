@@ -102,6 +102,10 @@ int main(void) {
 		ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x * 0.75f, 0.0f));
 		ImGui::Begin("Users", nullptr, ImGuiWindowFlags_NoMove);
 
+		for (ChatUser& user : chat.users) {
+			ImGui::Text(user.name.c_str());
+		}
+
 		ImGui::End();
 
 		// GUI - Input box

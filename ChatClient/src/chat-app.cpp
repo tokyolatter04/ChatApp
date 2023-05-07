@@ -98,6 +98,21 @@ void ChatApp::PacketProcessor() {
 
 			messages = data_packet.data.message_list;
 		}
+		else if (packet.channel == "user-list") {
+			// Decode packet
+
+			DataPacket data_packet;
+
+			if (!DataPacket::FromJSONData(DataPacketType::UserList, packet.body, &data_packet)) {
+				// Failed to decode the packet
+
+				continue;
+			}
+
+			// Store the user list
+
+			users = data_packet.data.user_list;
+		}
 	}
 }
 

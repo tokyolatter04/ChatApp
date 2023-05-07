@@ -23,6 +23,7 @@ public:
 
 	void SendMessage(ChatMessage message);
 	void SendMessageList(std::vector<ChatMessage> messages);
+	void SendUserList(std::vector<ChatUser> users);
 };
 
 class ChatMessage {
@@ -57,4 +58,5 @@ public:
 	void ConnectionListener();
 
 	void BroadcastMessage(ChatMessage message);
+	void BroadcastUsers();
 };

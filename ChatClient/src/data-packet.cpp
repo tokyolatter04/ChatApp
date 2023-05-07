@@ -71,6 +71,7 @@ bool ReadString(JsonObject jsObj, std::string key, JsonString* out_jsStr) {
 }
 
 bool ParseMessageObject(JsonObject jsObj, ChatMessage* out_message) {
+
 	// Get the sender object
 
 	JsonObject jsSenderObj;
@@ -117,6 +118,34 @@ bool ParseMessageObject(JsonObject jsObj, ChatMessage* out_message) {
 		jsMessageID,
 		jsMessageContent,
 		ChatUser(jsSenderID, jsSenderName)
+	);
+
+	return true;
+}
+
+bool ParseUserObject(JsonObject jsObj, ChatUser* out_user) {
+
+	// Get the user ID
+
+	JsonString jsUserID;
+
+	if (!ReadString(jsObj, "id", &jsUserID)) {
+		return false;
+	}
+
+	// Get the user name
+
+	JsonString jsUserName;
+
+	if (!ReadString(jsObj, "name", &jsUserName)) {
+		return false;
+	}
+
+	// Construct the user
+
+	*out_user = ChatUser(
+		jsUserID,
+		jsUserName
 	);
 
 	return true;
@@ -237,6 +266,47 @@ bool DataPacket::FromJSONData(DataPacketType type, std::string data, DataPacket*
 			}
 
 			out_packet->data.message_list = message_list;
+
+			break;
+		}
+		case DataPacketType::UserList: {
+
+			// Get the user list object
+
+			JsonList jsUserList;
+
+			if (!ReadList(jsObj, "users", &jsUserList)) {
+				return false;
+			}
+
+			// Read the users into a user vector
+
+			std::vector<ChatUser> user_list;
+
+			for (uint64 i = 0; i < jsUserList.length; i++) {
+
+				// Get the user JSON object
+
+				JsonValue* jsUserVal = json_list_get(&jsUserList, i);
+
+				if (jsUserVal->type != JSON_DATA_TYPE_OBJECT) {
+					return false;
+				}
+
+				JsonObject jsUserObj = jsUserVal->data._object;
+
+				// Parse the user object
+
+				ChatUser user;
+
+				if (!ParseUserObject(jsUserObj, &user)) {
+					return false;
+				}
+
+				user_list.push_back(user);
+			}
+
+			out_packet->data.user_list = user_list;
 
 			break;
 		}

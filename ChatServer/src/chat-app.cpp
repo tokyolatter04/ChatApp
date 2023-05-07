@@ -25,6 +25,14 @@ void ChatUser::SendMessageList(std::vector<ChatMessage> messages) {
 	client.SendPacket("message-list", encoded);
 }
 
+void ChatUser::SendUserList(std::vector<ChatUser> users) {
+
+	DataPacket packet = DataPacket::CreateUserListPacket(users);
+	std::string encoded = packet.Encode();
+
+	client.SendPacket("user-list", encoded);
+}
+
 /***************************************
 * ChatApp
  ***************************************/
@@ -89,6 +97,10 @@ void ChatApp::ConnectionListener() {
 		// Send the list of current messages
 
 		user.SendMessageList(messages);
+
+		// Broadcast the new list of users
+
+		BroadcastUsers();
 
 		// Get a pointer to this user in the user list
 
@@ -163,5 +175,11 @@ void ChatApp::BroadcastMessage(ChatMessage message) {
 	for (ChatUser& user : users) {
 		user.SendMessage(message);
 	}
+}
 
+void ChatApp::BroadcastUsers() {
+
+	for (ChatUser& user : users) {
+		user.SendUserList(users);
+	}
 }

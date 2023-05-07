@@ -5,7 +5,8 @@
 
 enum class DataPacketType {
 	Message,
-	MessageList
+	MessageList,
+	UserList
 };
 
 class DataPacket {
@@ -15,6 +16,7 @@ public:
 	struct {
 		ChatMessage message;
 		std::vector<ChatMessage> message_list;
+		std::vector<ChatUser> user_list;
 	} data;
 
 	std::string Encode();

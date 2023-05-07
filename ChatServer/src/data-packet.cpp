@@ -128,6 +128,32 @@ std::string DataPacket::Encode() {
 
 			break;
 		}
+		case DataPacketType::UserList: {
+
+			// Create the user list
+
+			JsonList jsUserList = json_create_list();
+
+			for (ChatUser& user : data.user_list) {
+
+				// Create the user object
+
+				JsonObject jsUserObj = json_create_object();
+
+				json_object_add(&jsUserObj, "id", json_create_string_value(user.id.c_str()));
+				json_object_add(&jsUserObj, "name", json_create_string_value(user.name.c_str()));
+
+				// Add user to the user list
+
+				json_list_add(&jsUserList, json_create_object_value(jsUserObj));
+			}
+
+			// Fill the JSON object with the user list data
+
+			json_object_add(&jsObj, "users", json_create_list_value(jsUserList));
+
+			break;
+		}
 	}
 
 	// Encode the JSON object
@@ -158,6 +184,16 @@ DataPacket DataPacket::CreateMessageListPacket(std::vector<ChatMessage> messages
 
 	packet.type = DataPacketType::MessageList;
 	packet.data.message_list = messages;
+
+	return packet;
+}
+
+DataPacket DataPacket::CreateUserListPacket(std::vector<ChatUser> users) {
+
+	DataPacket packet;
+
+	packet.type = DataPacketType::UserList;
+	packet.data.user_list = users;
 
 	return packet;
 }
