@@ -21,8 +21,13 @@ public:
 
 	ChatUser() {}
 
+	// Send a message to this client
 	void SendMessage(ChatMessage message);
+
+	// Send a list of messages to this client (a list of all of the chat app's messages)
 	void SendMessageList(std::vector<ChatMessage> messages);
+
+	// Send a list of users to this client (a list of all of the connected users)
 	void SendUserList(std::vector<ChatUser> users);
 };
 
@@ -45,18 +50,29 @@ class ChatApp {
 private:
 	TcpServer server;
 
+	// List of all of the currently connected users
 	std::vector<ChatUser> users;
+
+	// List of all of the messages
 	std::vector<ChatMessage> messages;
 
+	// Receive and process packets sent from this client
 	void ProcessPackets(ChatUser* user);
 public:
 	ChatApp();
 
+	// Start the chat app
 	void Start();
+
+	// Shutdown the chat app
 	void Shutdown();
 
+	// Listen for connection requests
 	void ConnectionListener();
 
+	// Send a message to all of the clients
 	void BroadcastMessage(ChatMessage message);
+
+	// Send the list of connected users to all of the clients
 	void BroadcastUsers();
 };

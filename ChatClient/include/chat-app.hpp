@@ -35,7 +35,10 @@ class ChatApp {
 private:
 	TcpClient client;
 public:
+	// List of all of the currently connected users
 	std::vector<ChatUser> users;
+
+	// List of all of the messages
 	std::vector<ChatMessage> messages;
 
 	ChatApp() {}
@@ -44,10 +47,15 @@ public:
 		return client.IsConnected();
 	}
 
+	// Start the chat app and connect to the server
 	bool Start();
+
+	// Shutdown the chat app
 	void Shutdown();
 
+	// Receive and process packets sent to this client
 	void PacketProcessor();
 
+	// Send a message to the server
 	void SendMessage(ChatMessage message);
 };

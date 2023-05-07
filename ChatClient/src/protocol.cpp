@@ -11,7 +11,6 @@
 
 /*
 	Parse the packet header from a JSON string
-	Return false if any errors occur while parsing
 */
 
 bool PacketHeaderData::ParseJson(PacketHeaderData* header_data, std::string json) {
@@ -147,6 +146,9 @@ bool PacketHeaderData::ParseJson(PacketHeaderData* header_data, std::string json
 	Write bytes to the packet decoder buffer
 	Continue packet decoding until a complete packet has been formed, add this to the queue
 	Use hashing the determine if the packet body is correct
+
+	Packet structure:
+	PACKET_HEADER\t\t\t\t\tPACKET_BODY\t
 */
 
 void Protocol::PushBytes(std::string data) {
@@ -320,7 +322,6 @@ std::string Protocol::BuildPacket(std::string channel, std::string body, std::ve
 
 /*
 	Read a packet from the queued packets
-	Return false if there are no packets to dequeue
 */
 
 bool Protocol::GetPacket(RawPacket* out_packet) {

@@ -11,7 +11,7 @@
 #include "cryptography.hpp"
 
 /*
-	Represents a packet of that is transferred over the network
+	Represents a packet that is transferred over the network
 */
 
 class RawPacket {

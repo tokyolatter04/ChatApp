@@ -1,5 +1,4 @@
 
-#include <iostream>//
 #include <thread>
 
 #include "../include/chat-app.hpp"
@@ -63,8 +62,6 @@ void ChatApp::PacketProcessor() {
 
 		// Decode packet
 
-		std::cout << "Packet: " << packet.body << '\n';
-
 		if (packet.channel == "message") {
 
 			// Decode the packet
@@ -117,6 +114,8 @@ void ChatApp::PacketProcessor() {
 }
 
 void ChatApp::SendMessage(ChatMessage message) {
+
+	// Create a data packet from the message and send it to the server
 
 	DataPacket packet = DataPacket::CreateMessagePacket(message);
 	std::string encoded = packet.Encode();

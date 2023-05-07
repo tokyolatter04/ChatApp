@@ -7,6 +7,10 @@
 * Internal Helpers
  ***************************************/
 
+/*
+	Get a JSON object from a JSON object by its key
+*/
+
 bool ReadObject(JsonObject jsObj, std::string key, JsonObject* out_jsObj) {
 
 	JsonValue* jsVal;
@@ -27,6 +31,10 @@ bool ReadObject(JsonObject jsObj, std::string key, JsonObject* out_jsObj) {
 
 	return true;
 }
+
+/*
+	Get a JSON list from a JSON object by its key
+*/
 
 bool ReadList(JsonObject jsObj, std::string key, JsonList* out_jsList) {
 
@@ -49,6 +57,10 @@ bool ReadList(JsonObject jsObj, std::string key, JsonList* out_jsList) {
 	return true;
 }
 
+/*
+	Get a JSON string from a JSON object by its key
+*/
+
 bool ReadString(JsonObject jsObj, std::string key, JsonString* out_jsStr) {
 
 	JsonValue* jsVal;
@@ -69,6 +81,10 @@ bool ReadString(JsonObject jsObj, std::string key, JsonString* out_jsStr) {
 
 	return true;
 }
+
+/*
+	Parse a ChatMessage object from a JSON object
+*/
 
 bool ParseMessageObject(JsonObject jsObj, ChatMessage* out_message) {
 
@@ -122,6 +138,10 @@ bool ParseMessageObject(JsonObject jsObj, ChatMessage* out_message) {
 
 	return true;
 }
+
+/*
+	Parse a ChatUser object from a JSON object
+*/
 
 bool ParseUserObject(JsonObject jsObj, ChatUser* out_user) {
 

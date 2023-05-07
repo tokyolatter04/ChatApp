@@ -5,6 +5,10 @@
 * Internal Helpers
  ***************************************/
 
+ /*
+	 Get a JSON object from a JSON object by its key
+ */
+
 bool ReadObject(JsonObject obj, std::string key, JsonObject* out_obj) {
 
 	JsonValue* jsVal;
@@ -26,6 +30,10 @@ bool ReadObject(JsonObject obj, std::string key, JsonObject* out_obj) {
 	return true;
 }
 
+/*
+	Get a JSON list from a JSON object by its key
+*/
+
 bool ReadList(JsonObject obj, std::string key, JsonList* out_list) {
 
 	JsonValue* jsVal;
@@ -46,6 +54,10 @@ bool ReadList(JsonObject obj, std::string key, JsonList* out_list) {
 
 	return true;
 }
+
+/*
+	Get a JSON string from a JSON object by its key
+*/
 
 bool ReadString(JsonObject obj, std::string key, JsonString* out_str) {
 

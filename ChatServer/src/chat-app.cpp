@@ -1,6 +1,4 @@
 
-#include <iostream>//
-
 #include "../include/chat-app.hpp"
 #include "../include/data-packet.hpp"
 #include "../include/utils.hpp"
@@ -11,6 +9,8 @@
 
 void ChatUser::SendMessage(ChatMessage message) {
 
+	// Create a data packet from the message and send it to the client
+
 	DataPacket packet = DataPacket::CreateMessagePacket(message);
 	std::string encoded = packet.Encode();
 
@@ -19,6 +19,8 @@ void ChatUser::SendMessage(ChatMessage message) {
 
 void ChatUser::SendMessageList(std::vector<ChatMessage> messages) {
 
+	// Create a data packet from the message list and send it to the client
+
 	DataPacket packet = DataPacket::CreateMessageListPacket(messages);
 	std::string encoded = packet.Encode();
 
@@ -26,6 +28,8 @@ void ChatUser::SendMessageList(std::vector<ChatMessage> messages) {
 }
 
 void ChatUser::SendUserList(std::vector<ChatUser> users) {
+
+	// Create a data packet from the user list and send it to the client
 
 	DataPacket packet = DataPacket::CreateUserListPacket(users);
 	std::string encoded = packet.Encode();
