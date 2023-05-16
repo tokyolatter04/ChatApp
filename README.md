@@ -9,6 +9,7 @@ This is a TCP chat room which supports real time instant messaging between clien
 
 - Realtime instant messaging
 - Encrypted communication
+- GZIP compression
 - Effective disconnection handling
 - Client loads the conversation when it first connects
 - Client loads a list of all of the other clients connected
