@@ -16,4 +16,7 @@ This is a TCP chat room which supports real time instant messaging between clien
 
 The custom stream-based messaging protocol is an encrypted JSON based protocol. Each message consists of a header and a body, the header contains the size of the body and a SHA256 hash of the body to ensure the data received is correct. Each packet has its own channel, this is a string in the header which describes what the packet is, for example a ChatMessage object would have the header "message".
 
-
+Message Packet Structure:
+  HEADER_DATA
+  PACKET_SPLITTER (Delimiter to seperate the header data from the packet body)
+  PACKET_BODY
