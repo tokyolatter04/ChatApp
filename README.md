@@ -9,6 +9,7 @@ This is a TCP chat room which supports real time instant messaging between clien
 
 - Realtime instant messaging
 - Encrypted communication
+- Effective disconnection handling
 - Client loads the conversation when it first connects
 - Client loads a list of all of the other clients connected
 
@@ -25,4 +26,4 @@ Message Packet Structure:
 
 The GUI was programmed in the DearIMGUI library using OpenGL. Users can send messages, view messages and view a list of all of the connected clients
 
-![Capture](https://github.com/tokyolatter04/ChatApp/assets/97055625/158d24c9-165f-4045-83e1-3e95692a541b)
+![Capture](https://github.com/tokyolatter04/ChatApp/assets/97055625/25bb09b7-90b8-4be2-803f-b729ff3ec1bf)
