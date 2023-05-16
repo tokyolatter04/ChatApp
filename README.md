@@ -33,6 +33,8 @@ Message Packet Structure:
 - PACKET_SPLITTER (Delimiter to seperate the header data from the packet body)
 - PACKET_BODY
 
+This application uses [SoftJson](https://github.com/tokyolatter04/SoftJson) as a JSON parser to pack and unpack data
+
 ## Interface
 
 The GUI was programmed in the DearIMGUI library using OpenGL. Users can send messages, view messages and view a list of all of the connected clients. Each user has their own random username with 4 digits on the end
