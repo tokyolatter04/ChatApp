@@ -20,7 +20,7 @@ This is a TCP chat room which supports real time instant messaging between clien
 - Client sends RSA public key to the server
 - Server creates an AES key
 - Server encrypts the AES key with the client's RSA public key
-- Server sends encrypted AES to the client
+- Server sends encrypted AES key to the client
 - Client decrypts the AES key using its private key
 - This AES key is used throughout the rest of the session
 
