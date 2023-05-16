@@ -21,6 +21,7 @@ Message Packet Structure:
 - HEADER_DATA
 - PACKET_SPLITTER (Delimiter to seperate the header data from the packet body)
 - PACKET_BODY
+- Compress and encrypt the packet before sending
 
 ## Interface
 
