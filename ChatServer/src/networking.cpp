@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include <WS2tcpip.h>
 
 #include "../include/networking.hpp"
@@ -185,12 +186,6 @@ bool TcpClient::Receive(char* buffer, int32 buffer_len, int32* out_len) {
 */
 
 void TcpClient::StartListening() {
-
-	const std::string PACKET_DELIMITER = "\t\t\t\t\t";
-	const char PACKET_DELIMITER_CHAR = '\t';
-	const std::string PACKET_SPLITTER = "|||||";
-
-	std::string packet_buffer;
 
 	while (IsConnected()) {
 		// Receive data from client

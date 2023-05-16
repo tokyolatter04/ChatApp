@@ -29,7 +29,7 @@ int main(void) {
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "Window", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(640, 480, "Chat App Window", nullptr, nullptr);
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(2);

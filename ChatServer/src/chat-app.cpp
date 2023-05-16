@@ -142,8 +142,6 @@ void ChatApp::ProcessPackets(ChatUser* user) {
 
 		// Decode packet
 
-		std::cout << "Packet: " << packet.body << '\n';
-
 		if (packet.channel == "message") {
 
 			// Decode the packet

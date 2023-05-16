@@ -182,16 +182,8 @@ void Protocol::PushBytes(std::string data) {
 					if (!PacketHeaderData::ParseJson(&header_data, header)) {
 						// Error parsing JSON header
 
-						std::cout << "Header Parse Error\n";
-						std::cout << "Header: " << header << '\n';
-
-						while (true);
+						return;
 					}
-
-					std::cout << "ID: " << header_data.id << '\n';
-					std::cout << "Body Hash: " << header_data.body_hash << '\n';
-					std::cout << "Body Size: " << header_data.body_size << '\n';
-					std::cout << "Channel: " << header_data.channel << '\n';
 
 					// Fill current packet with header data
 
@@ -207,11 +199,8 @@ void Protocol::PushBytes(std::string data) {
 						if (jsFlagVal->type != JSON_DATA_TYPE_STRING) {
 							// Flag is not the correct data type
 
-							std::cout << "Flag Data Type Is Wrong\n";
-							while (true);
+							return;
 						}
-
-						std::cout << "Flag " << i << ": " << jsFlagVal->data._string << '\n';
 
 						current_packet.flags.push_back(jsFlagVal->data._string);
 					}
@@ -242,9 +231,12 @@ void Protocol::PushBytes(std::string data) {
 				if (Cryptography::Sha256::ComputeTextHash(body) != current_packet.body_hash) {
 					// Body hash is not correct
 
-					std::cout << "Body SHA256 Checksum Failure!\n";
-					while (true);
+					return;
 				}
+
+				// Print out the packet data
+
+				std::cout << "[RECV " << body.length() << " BYTES]: " << body << '\n';
 
 				// Set body for the current packet
 
