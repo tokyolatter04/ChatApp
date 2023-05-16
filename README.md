@@ -24,6 +24,10 @@ Message Packet Structure:
 
 ## Interface
 
-The GUI was programmed in the DearIMGUI library using OpenGL. Users can send messages, view messages and view a list of all of the connected clients
+The GUI was programmed in the DearIMGUI library using OpenGL. Users can send messages, view messages and view a list of all of the connected clients. Each user has their own random username with 4 digits on the end
 
-![Capture](https://github.com/tokyolatter04/ChatApp/assets/97055625/25bb09b7-90b8-4be2-803f-b729ff3ec1bf)
+![Screenshot](https://github.com/tokyolatter04/ChatApp/assets/97055625/25bb09b7-90b8-4be2-803f-b729ff3ec1bf)
+
+[!Recording](https://github.com/tokyolatter04/ChatApp/assets/97055625/167c2e80-1525-4816-b6d0-3e01446cf8e0)
+
+
